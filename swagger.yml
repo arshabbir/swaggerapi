@@ -1,0 +1,94 @@
+
+swagger: "2.0"
+
+info:
+  description: Sensor application
+  title: Sensor application
+  version: 1.0.0
+
+
+schemes:
+- http
+
+paths:
+  /add:
+ 
+    post:
+      consumes:
+          - application/json
+      produces:
+          - application/json
+      tags:
+        - Add sensordata
+      
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "#/definitions/reading"
+      responses:
+        201:
+          description: Created
+          schema:
+            $ref: "#/definitions/reading"
+        default:
+          description: error
+          schema:
+            $ref: "#/definitions/apierror"
+  /:
+    get:
+      produces:
+          - application/json
+      tags:
+        - SensorData
+      parameters:
+        - name: since
+          in: query
+          type: integer
+          format: int64
+        - name: limit
+          in: query
+          type: integer
+          format: int32
+          default: 20
+      responses:
+        200:
+          description: list the sensor data
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/reading"
+        default:
+          description: API error response
+          schema:
+            $ref: "#/definitions/apierror"
+  
+definitions:
+  reading:
+    type: object
+    required:
+      - description
+    properties:
+      id:
+        type: integer
+        format: int64
+        readOnly: true
+      description:
+        type: string
+        minLength: 3
+        maxLength: 20
+        
+      value:
+        type: number
+        format: float
+  apierror:
+    type: object
+    required:
+      - message
+    properties:
+      code:
+        type: integer
+        format: int64
+      message:
+        type: string
+
